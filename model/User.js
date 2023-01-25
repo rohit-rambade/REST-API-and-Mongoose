@@ -1,8 +1,36 @@
+const mongoose = require("mongoose");
+import validator from "validator";
+
 const userSchema = new mongoose.Schema({
-  name: String,
-  age: Number,
-  email: String,
-  password: String,
+  name: {
+    type: String,
+    minlength: 3,
+    maxlength: 20,
+    required: true,
+  },
+  age: {
+    type: Number,
+    validate(value) {
+      if (value < 18) {
+        throw new Error(`Age Can't  Be Less Than 18`);
+      }
+    },
+  },
+  email: {
+    type: String,
+    validate(value) {
+      if (!validator.isEmail(value)) {
+        {
+          throw new Error(`Email Is Not Valid`);
+        }
+      }
+    },
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
 });
 
 const User = mongoose.model("User", userSchema);
