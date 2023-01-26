@@ -50,13 +50,62 @@ app.get("/viewuser", async (req, res) => {
 app.get("/task/:id", async (req, res) => {
   const task = await Task.findById(req.params.id);
   console.log(task);
+  if (!task) {
+    return res.status(404).json({
+      success: false,
+      message: "Task Not Found",
+    });
+  }
+
   return res.json({ success: true, task });
 });
 
 app.get("/user/:id", async (req, res) => {
   const user = await User.findById(req.params.id);
   console.log(user);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User Not Found",
+    });
+  }
+
   return res.json({ success: true, user });
+});
+
+app.patch("/user/:id", async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User Not Found",
+    });
+  }
+
+  return res.json({ success: true, user });
+});
+
+app.delete("/delete/:id", async (req, res) => {
+  const user = await User.findByIdAndDelete(req.params.id);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: "User Not Found",
+    });
+  }
+
+  return res.json({ success: true, user });
+});
+
+app.delete("/taskd/:id", async (req, res) => {
+  const task = await Task.findByIdAndDelete(req.params.id);
+
+  return res.json({ success: true, task });
 });
 
 // async function db() {
