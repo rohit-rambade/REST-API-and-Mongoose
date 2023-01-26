@@ -35,6 +35,18 @@ app.post("/user", async (req, res) => {
   }
 });
 
+app.get("/viewtask", async (req, res) => {
+  const task = await Task.find();
+  console.log(task);
+  return res.json({ success: true, task });
+});
+
+app.get("/viewuser", async (req, res) => {
+  const user = await User.find();
+  console.log(user);
+  return res.json({ success: true, user });
+});
+
 // async function db() {
 //   try {
 //     const user = new User({
