@@ -47,6 +47,18 @@ app.get("/viewuser", async (req, res) => {
   return res.json({ success: true, user });
 });
 
+app.get("/task/:id", async (req, res) => {
+  const task = await Task.findById(req.params.id);
+  console.log(task);
+  return res.json({ success: true, task });
+});
+
+app.get("/user/:id", async (req, res) => {
+  const user = await User.findById(req.params.id);
+  console.log(user);
+  return res.json({ success: true, user });
+});
+
 // async function db() {
 //   try {
 //     const user = new User({
