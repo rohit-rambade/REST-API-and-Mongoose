@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 20,
     required: true,
+    trim: true,
   },
   age: {
     type: Number,
@@ -17,6 +18,9 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    unique: true,
+    lowercase: true,
+    trim: true,
     validate(value) {
       if (!validator.isEmail(value)) {
         {
