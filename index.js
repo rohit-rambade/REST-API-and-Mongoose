@@ -1,137 +1,20 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
+app.use(express.json());
+const port = process.env.PORT || 3000;
 mongoose
   .connect("mongodb://127.0.0.1:27017/tasks")
   .then(() => console.log("Database is Connected"))
   .catch((err) => console.log(err));
 
-const User = require("./model/User");
-const Task = require("./model/Task");
-app.use(express.json());
+const userRoutes = require("./routes/User");
+const taskRoutes = require("./routes/Task");
 
-app.post("/task", async (req, res) => {
-  try {
-    const task = new Task(req.body);
-    console.log(task);
+app.use(userRoutes);
 
-    await task.save();
-    return res.status(201).json({ success: true, task });
-  } catch (e) {
-    return res.status(400).json({ success: false, message: e.message });
-  }
-});
+app.use(taskRoutes);
 
-app.post("/user", async (req, res) => {
-  try {
-    const user = new User(req.body);
-    console.log(user);
-
-    await user.save();
-    return res.status(201).json({ success: true, user });
-  } catch (e) {
-    return res.status(400).json({ success: false, message: e.message });
-  }
-});
-
-app.get("/viewtask", async (req, res) => {
-  const task = await Task.find();
-  console.log(task);
-  return res.json({ success: true, task });
-});
-
-app.get("/viewuser", async (req, res) => {
-  const user = await User.find();
-  console.log(user);
-  return res.json({ success: true, user });
-});
-
-app.get("/task/:id", async (req, res) => {
-  const task = await Task.findById(req.params.id);
-  console.log(task);
-  if (!task) {
-    return res.status(404).json({
-      success: false,
-      message: "Task Not Found",
-    });
-  }
-
-  return res.json({ success: true, task });
-});
-
-app.get("/user/:id", async (req, res) => {
-  const user = await User.findById(req.params.id);
-  console.log(user);
-  if (!user) {
-    return res.status(404).json({
-      success: false,
-      message: "User Not Found",
-    });
-  }
-
-  return res.json({ success: true, user });
-});
-
-app.patch("/user/:id", async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  if (!user) {
-    return res.status(404).json({
-      success: false,
-      message: "User Not Found",
-    });
-  }
-
-  return res.json({ success: true, user });
-});
-
-app.delete("/delete/:id", async (req, res) => {
-  const user = await User.findByIdAndDelete(req.params.id);
-
-  if (!user) {
-    return res.status(404).json({
-      success: false,
-      message: "User Not Found",
-    });
-  }
-
-  return res.json({ success: true, user });
-});
-
-app.delete("/taskd/:id", async (req, res) => {
-  const task = await Task.findByIdAndDelete(req.params.id);
-
-  return res.json({ success: true, task });
-});
-
-// async function db() {
-//   try {
-//     const user = new User({
-//       name: "test",
-//       age: 23,
-//       email: "test@gmail.com",
-//       password: "rohit@121",
-//     });
-
-//     const task = new Task({
-//       description: "task",
-//       isCompleted: true,
-//     });
-
-//     await user.save();
-//     await task.save();
-
-//     console.log(task);
-//   } catch (e) {
-//     console.log(e.message);
-//   }
-// }
-
-// db();
 app.listen(port, () => {
   console.log(`Server Is Running At Port ${port}`);
 });
