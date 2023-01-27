@@ -1,5 +1,5 @@
 const User = require("../model/User");
-const bcryptjs = require("bcryptjs");
+
 exports.viewUser = async (req, res) => {
   const user = await User.find();
   console.log(user);
@@ -21,7 +21,6 @@ exports.viewSpecificUser = async (req, res) => {
 
 exports.storeUser = async (req, res) => {
   try {
-    req.body.password = await bcryptjs.hash(req.body.password, 7);
     const user = new User(req.body);
     console.log(user);
 
@@ -33,10 +32,7 @@ exports.storeUser = async (req, res) => {
 };
 
 exports.UpdateSpecificUser = async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  const user = await User.findById(req.params.id);
 
   if (!user) {
     return res.status(404).json({
@@ -44,6 +40,14 @@ exports.UpdateSpecificUser = async (req, res) => {
       message: "User Not Found",
     });
   }
+
+  const keys = Object.keys(req.body);
+
+  for (let key of keys) {
+    user[key] = req.body[key];
+  }
+
+  await user.save();
 
   return res.json({ success: true, user });
 };
