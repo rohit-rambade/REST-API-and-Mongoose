@@ -1,5 +1,5 @@
 const User = require("../model/User");
-
+const bcryptjs = require("bcryptjs");
 exports.viewUser = async (req, res) => {
   const user = await User.find();
   console.log(user);
@@ -21,6 +21,7 @@ exports.viewSpecificUser = async (req, res) => {
 
 exports.storeUser = async (req, res) => {
   try {
+    req.body.password = await bcryptjs.hash(req.body.password, 7);
     const user = new User(req.body);
     console.log(user);
 
