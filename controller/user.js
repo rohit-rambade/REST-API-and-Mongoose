@@ -1,5 +1,7 @@
 const User = require("../model/User");
 
+const bcryptjs = require("bcryptjs");
+
 exports.viewUser = async (req, res) => {
   const user = await User.find();
   console.log(user);
@@ -63,4 +65,31 @@ exports.deleteSpecificUser = async (req, res) => {
   }
 
   return res.json({ success: true, user });
+};
+
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid Email / Password",
+    });
+  }
+
+  const isMatch = await bcryptjs.compare(password, user.password);
+
+  if (!isMatch) {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid Email / Password",
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Login Success",
+    user,
+  });
 };

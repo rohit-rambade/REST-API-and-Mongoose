@@ -8,6 +8,7 @@ const {
   storeUser,
   UpdateSpecificUser,
   deleteSpecificUser,
+  loginUser,
 } = require("../controller/user");
 
 //View
@@ -20,5 +21,5 @@ router.post("/user", storeUser);
 router.patch("/user/:id", UpdateSpecificUser);
 // Delete
 router.delete("/delete/:id", deleteSpecificUser);
-
+router.post("/user/login", loginUser);
 module.exports = router;
